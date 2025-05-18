@@ -7,7 +7,6 @@ export default function LocationDetails() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Location ID: {id}</Text>
-      {/* Later you can fetch location data by ID */}
     </View>
   );
 }
