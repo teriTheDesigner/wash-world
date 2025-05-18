@@ -1,4 +1,4 @@
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   View,
@@ -13,13 +13,14 @@ export default function SignUpScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const router = useRouter();
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     if (name.length < 4) {
       setError("Name must be at least 4 characters long.");
       return;
@@ -38,6 +39,29 @@ export default function SignUpScreen() {
     setError("");
 
     console.log("Signing up:", { name, email, password });
+
+    try {
+      const response = await fetch("http://localhost:3000/users/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.message || "Signup failed");
+        return;
+      }
+
+      const data = await response.json();
+      console.log("Signup successful:", data);
+      router.push("/login");
+    } catch (error) {
+      console.error("Signup error:", error);
+      setError("An error occurred. Please try again.");
+    }
   };
 
   return (
