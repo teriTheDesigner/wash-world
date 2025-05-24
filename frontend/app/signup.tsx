@@ -99,13 +99,21 @@ export default function SignUpScreen() {
       </TouchableOpacity>
 
       <Text style={styles.loginText}>
-        Already have an account? <Link href="/login">Login</Link>
+        Already have an account?{" "}
+        <Link href="/login" style={styles.signupLink}>
+          Login
+        </Link>
       </Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  signupLink: {
+    textDecorationLine: "underline",
+    color: "#34B566",
+    fontWeight: "600",
+  },
   button: {
     backgroundColor: "#34B566",
     padding: 12,

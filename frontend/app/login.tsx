@@ -8,11 +8,16 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from "react-native";
+import { useDispatch } from "react-redux";
+import { setToken } from "./store/auth/authSlice";
+import { Link, useRouter } from "expo-router";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const router = useRouter();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -34,8 +39,10 @@ export default function LoginScreen() {
       const data = await response.json();
 
       if (response.ok) {
+        dispatch(setToken(data.access_token));
         Alert.alert("Success", "Logged in successfully");
         console.log("Token:", data.access_token);
+        router.replace("/");
       } else {
         Alert.alert("Login failed", data.message || "Invalid credentials");
       }
@@ -68,15 +75,33 @@ export default function LoginScreen() {
       {loading ? (
         <ActivityIndicator size="large" />
       ) : (
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Log In</Text>
-        </TouchableOpacity>
+        <>
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+            <Text style={styles.buttonText}>Log In</Text>
+          </TouchableOpacity>
+
+          <Text style={styles.loginText}>
+            Don't have an account?{" "}
+            <Link href="/signup" style={styles.signupLink}>
+              Sign up
+            </Link>
+          </Text>
+        </>
       )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  signupLink: {
+    textDecorationLine: "underline",
+    color: "#34B566",
+    fontWeight: "600",
+  },
+  loginText: {
+    marginTop: 20,
+    textAlign: "center",
+  },
   button: {
     backgroundColor: "#34B566",
     padding: 12,

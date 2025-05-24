@@ -1,13 +1,18 @@
-import { Tabs } from "expo-router";
+import { Redirect, Tabs } from "expo-router";
 import React from "react";
 import { Platform } from "react-native";
 
 import { HapticTab } from "@/components/HapticTab";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/store";
 
 export default function TabLayout() {
-  return (
+  const token = useSelector((state: RootState) => state.auth.token);
+  return !token ? (
+    <Redirect href="/login" />
+  ) : (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: "black",
