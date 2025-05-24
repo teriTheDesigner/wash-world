@@ -4,29 +4,20 @@ import {
   Injectable,
   ForbiddenException,
 } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
 
+import { UserService } from '../user/user.service';
+import { User } from '../user.entity';
+import { Role } from '../user/role';
 @Injectable()
 export class AdminGuard implements CanActivate {
-  constructor(private reflector: Reflector) {}
+  constructor(private userService: UserService) {}
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context.switchToHttp().getRequest();
+    const userWithToken: User = request.user;
+    const user = await this.userService.findByEmail(userWithToken.email);
 
-  canActivate(context: ExecutionContext): boolean {
-    const requiredRoles = this.reflector.get<string[]>(
-      'roles',
-      context.getHandler(),
-    );
-    if (!requiredRoles) {
-      // No roles required, allow access
-      return true;
-    }
-
-    const { user } = context.switchToHttp().getRequest();
-    if (!user) {
-      throw new ForbiddenException('User not authenticated');
-    }
-
-    if (!requiredRoles.includes(user.role)) {
-      throw new ForbiddenException('Insufficient role');
+    if (!user || user.role !== Role.Admin) {
+      throw new ForbiddenException('Access denied. Admins only.');
     }
 
     return true;
