@@ -8,6 +8,8 @@ import {
 } from '@nestjs/common';
 import { LocationService } from './location.service';
 import { CreateLocationDto } from './dto/create-location.dto';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from '../auth/auth.guard';
 
 @Controller('locations')
 export class LocationController {
@@ -18,6 +20,7 @@ export class LocationController {
     return this.locationService.create(createLocationDto);
   }
   @Get()
+  @UseGuards(AuthGuard)
   findAll() {
     return this.locationService.findAll();
   }
