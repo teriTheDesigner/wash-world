@@ -1,4 +1,3 @@
-// src/location/location.module.ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Location } from '../location.entity';
