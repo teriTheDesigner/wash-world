@@ -11,11 +11,15 @@ import {
 import { useDispatch } from "react-redux";
 import { setToken } from "./store/auth/authSlice";
 import { Link, useRouter } from "expo-router";
+import { setUser } from "./store/user/userSlice";
+import WelcomeScreen from "./WelcomeScreen";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [userName, setUserName] = useState("");
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -40,9 +44,11 @@ export default function LoginScreen() {
 
       if (response.ok) {
         dispatch(setToken(data.access_token));
+        dispatch(setUser(data.user));
         Alert.alert("Success", "Logged in successfully");
-        console.log("Token:", data.access_token);
-        router.replace("/");
+        console.log("Token and all data:", data);
+        setUserName(data.user.name);
+        setShowWelcome(true);
       } else {
         Alert.alert("Login failed", data.message || "Invalid credentials");
       }
@@ -53,7 +59,14 @@ export default function LoginScreen() {
       setLoading(false);
     }
   };
+  const handleWelcomeFinish = () => {
+    setShowWelcome(false);
+    router.replace("/");
+  };
 
+  if (showWelcome) {
+    return <WelcomeScreen name={userName} onFinish={handleWelcomeFinish} />;
+  }
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Log In</Text>
