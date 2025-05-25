@@ -21,4 +21,13 @@ export class LocationsAPI {
     });
     return response.data;
   }
+
+  static async getLocationById(id: string, token: string): Promise<Location> {
+    const response = await axios.get<Location>(`${this.baseUrl}/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  }
 }

@@ -21,6 +21,17 @@ export const fetchLocations = createAsyncThunk<
   return await LocationsAPI.getLocations(token, limit, offset);
 });
 
+export const fetchLocationById = createAsyncThunk<
+  Location,
+  string,
+  { state: RootState }
+>("locations/fetchOne", async (id, thunkAPI) => {
+  const token = thunkAPI.getState().auth.token;
+  if (!token) throw new Error("No token found");
+
+  return await LocationsAPI.getLocationById(id, token);
+});
+
 interface LocationState {
   locations: Location[];
   loading: boolean;
