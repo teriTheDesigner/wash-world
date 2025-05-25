@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { Location } from '../location.entity';
 import { CreateLocationDto } from './dto/create-location.dto';
 
@@ -16,8 +16,21 @@ export class LocationService {
     return this.locationRepository.save(location);
   }
 
-  async findAll(): Promise<Location[]> {
-    return this.locationRepository.find({ relations: ['serviceUnits'] });
+  // async findAll(): Promise<Location[]> {
+  //   return this.locationRepository.find({ relations: ['serviceUnits'] });
+  // }
+
+  async findAll(limit?: number, offset?: number): Promise<Location[]> {
+    const options: FindManyOptions<Location> = {
+      relations: ['serviceUnits'],
+    };
+
+    if (limit !== undefined && offset !== undefined) {
+      options.take = limit;
+      options.skip = offset;
+    }
+
+    return this.locationRepository.find(options);
   }
 
   async findOne(id: number): Promise<Location> {

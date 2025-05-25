@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { LocationService } from './location.service';
 import { CreateLocationDto } from './dto/create-location.dto';
@@ -23,8 +24,10 @@ export class LocationController {
   }
   @Get()
   @UseGuards(AuthGuard)
-  findAll() {
-    return this.locationService.findAll();
+  findAll(@Query('limit') limit?: string, @Query('offset') offset?: string) {
+    const take = limit ? parseInt(limit, 10) : undefined;
+    const skip = offset ? parseInt(offset, 10) : undefined;
+    return this.locationService.findAll(take, skip);
   }
 
   @Get(':id')

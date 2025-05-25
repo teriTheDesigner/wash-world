@@ -3,17 +3,22 @@ import { LocationsAPI } from "./LocationsAPI";
 import { Location } from "./location.model";
 import { RootState } from "../store/store";
 
+interface FetchLocationsParams {
+  limit: number;
+  offset: number;
+}
+
 export const fetchLocations = createAsyncThunk<
   Location[],
-  void,
+  FetchLocationsParams,
   { state: RootState }
->("locations/fetchAll", async (_, thunkAPI) => {
+>("locations/fetchAll", async ({ limit, offset }, thunkAPI) => {
   const token = thunkAPI.getState().auth.token;
   if (!token) {
     throw new Error("No token found");
   }
 
-  return await LocationsAPI.getLocations(token);
+  return await LocationsAPI.getLocations(token, limit, offset);
 });
 
 interface LocationState {
