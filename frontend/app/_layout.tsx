@@ -22,15 +22,5 @@ export default function RootLayout() {
     <Provider store={store}>
       <Slot />
     </Provider>
-    // <ThemeProvider value={DefaultTheme}>
-    //   <Stack>
-    //     <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-    //     <Stack.Screen name="login" />
-    //     <Stack.Screen name="location/[id]" />
-    //     <Stack.Screen name="+not-found" />
-    //   </Stack>
-
-    //   <StatusBar style="auto" />
-    // </ThemeProvider>
   );
 }
