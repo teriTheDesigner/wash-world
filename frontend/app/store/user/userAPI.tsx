@@ -15,6 +15,19 @@ export class UserAPI {
     return response.data;
   }
 
+  static async signup(
+    name: string,
+    email: string,
+    password: string
+  ): Promise<any> {
+    const response = await axios.post(`${baseUrl}/users/signup`, {
+      name,
+      email,
+      password,
+    });
+    return response.data;
+  }
+
   static async getUser(token: string): Promise<UserState> {
     const response = await axios.get<UserState>(`${baseUrl}/users/me`, {
       headers: { Authorization: `Bearer ${token}` },
