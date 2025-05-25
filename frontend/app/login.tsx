@@ -11,8 +11,9 @@ import {
 import { useDispatch } from "react-redux";
 import { setToken } from "./store/auth/authSlice";
 import { Link, useRouter } from "expo-router";
-import { setUser } from "./store/user/userSlice";
+import { setUser, UserState } from "./store/user/userSlice";
 import WelcomeScreen from "./WelcomeScreen";
+import { UserAPI } from "./store/user/userAPI";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
@@ -32,33 +33,26 @@ export default function LoginScreen() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:3000/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      const data: { access_token: string; user: UserState } =
+        await UserAPI.login(email, password);
 
-      const data = await response.json();
+      dispatch(setToken(data.access_token));
+      dispatch(setUser(data.user));
 
-      if (response.ok) {
-        dispatch(setToken(data.access_token));
-        dispatch(setUser(data.user));
-        Alert.alert("Success", "Logged in successfully");
-        console.log("Token and all data:", data);
-        setUserName(data.user.name);
-        setShowWelcome(true);
-      } else {
-        Alert.alert("Login failed", data.message || "Invalid credentials");
-      }
-    } catch (error) {
-      Alert.alert("Error", "Something went wrong");
+      Alert.alert("Success", "Logged in successfully");
+      setUserName(data.user.name || "Unknown User");
+      setShowWelcome(true);
+    } catch (error: any) {
+      Alert.alert(
+        "Login failed",
+        error.response?.data?.message || error.message || "Invalid credentials"
+      );
       console.error("Login error:", error);
     } finally {
       setLoading(false);
     }
   };
+
   const handleWelcomeFinish = () => {
     setShowWelcome(false);
     router.replace("/");
