@@ -1,22 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Dimensions, ScrollView } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { BarChart } from "react-native-chart-kit";
-import { PieChart } from "react-native-chart-kit";
+import { BarChart, PieChart } from "react-native-chart-kit";
+import { useSelector } from "react-redux";
+import { LocationsAPI } from "../locations/LocationsAPI";
+import { RootState } from "../store/store";
 
 const screenWidth = Dimensions.get("window").width;
-
-const data = {
-  totalLocations: 72,
-  totalServiceUnits: 133,
-  serviceUnitTypes: {
-    vacuum: 13,
-    self_wash: 25,
-    mat_cleaner: 17,
-    pre_wash: 6,
-    hall: 72,
-  },
-};
 
 function SummaryCard({
   iconName,
@@ -37,8 +27,38 @@ function SummaryCard({
 }
 
 export default function AdminStatsScreen() {
-  const labels = Object.keys(data.serviceUnitTypes);
-  const counts = Object.values(data.serviceUnitTypes);
+  const token = useSelector((state: RootState) => state.auth.token);
+  const [stats, setStats] = useState<{
+    totalLocations: number;
+    totalServiceUnits: number;
+    serviceUnitTypes: Record<string, number>;
+  } | null>(null);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        if (token) {
+          const data = await LocationsAPI.getAdminStats(token);
+          setStats(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch admin stats:", error);
+      }
+    };
+
+    if (token) fetchStats();
+  }, [token]);
+
+  if (!stats) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>Loading dashboard...</Text>
+      </View>
+    );
+  }
+
+  const labels = Object.keys(stats.serviceUnitTypes);
+  const counts = Object.values(stats.serviceUnitTypes);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -48,12 +68,12 @@ export default function AdminStatsScreen() {
         <SummaryCard
           iconName="location-on"
           label="Locations"
-          count={data.totalLocations}
+          count={stats.totalLocations}
         />
         <SummaryCard
           iconName="build"
           label="Service Units"
-          count={data.totalServiceUnits}
+          count={stats.totalServiceUnits}
         />
         <SummaryCard
           iconName="category"
@@ -63,7 +83,6 @@ export default function AdminStatsScreen() {
       </View>
 
       <Text style={styles.chartTitle}>Service Units Breakdown</Text>
-
       <BarChart
         data={{
           labels,
@@ -84,12 +103,15 @@ export default function AdminStatsScreen() {
         verticalLabelRotation={30}
         style={styles.chart}
       />
+
       <Text style={styles.chartTitle}>Service Units Distribution</Text>
       <PieChart
         data={labels.map((label, index) => ({
           name: label,
           population: counts[index],
-          color: ["#34B566", "#66BB6A", "#81C784", "#A5D6A7", "#C8E6C9"][index],
+          color: ["#34B566", "#66BB6A", "#81C784", "#A5D6A7", "#C8E6C9"][
+            index % 5
+          ],
           legendFontColor: "#333",
           legendFontSize: 14,
         }))}
@@ -108,7 +130,8 @@ export default function AdminStatsScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 40,
+    paddingTop: 40,
+    paddingHorizontal: 16,
     backgroundColor: "#f7f9fa",
     alignItems: "center",
   },

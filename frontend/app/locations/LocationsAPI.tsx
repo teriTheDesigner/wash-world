@@ -30,4 +30,22 @@ export class LocationsAPI {
     });
     return response.data;
   }
+
+  static async getAdminStats(token: string): Promise<{
+    totalLocations: number;
+    totalServiceUnits: number;
+    serviceUnitTypes: Record<string, number>;
+  }> {
+    const response = await axios.get<{
+      totalLocations: number;
+      totalServiceUnits: number;
+      serviceUnitTypes: Record<string, number>;
+    }>(`${this.baseUrl}/stats`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  }
 }
