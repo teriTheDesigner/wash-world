@@ -17,16 +17,18 @@ export class LocationController {
   constructor(private readonly locationService: LocationService) {}
 
   @Post()
+  @UseGuards(AuthGuard)
   async create(@Body() createLocationDto: CreateLocationDto) {
     return this.locationService.create(createLocationDto);
   }
   @Get()
-  @UseGuards(AuthGuard, AdminGuard)
+  @UseGuards(AuthGuard)
   findAll() {
     return this.locationService.findAll();
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard)
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.locationService.findOne(id);
   }
