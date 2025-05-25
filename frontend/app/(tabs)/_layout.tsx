@@ -7,17 +7,21 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function TabLayout() {
   const token = useSelector((state: RootState) => state.auth.token);
-  return !token ? (
-    <Redirect href="/login" />
-  ) : (
+  const user = useSelector((state: RootState) => state.user);
+
+  if (!token || !user) {
+    return <Redirect href="/login" />;
+  }
+
+  return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: "black",
         headerShown: false,
-        tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
           ios: {
@@ -36,14 +40,35 @@ export default function TabLayout() {
           ),
         }}
       />
+
       <Tabs.Screen
-        name="explore"
+        name="profile"
         options={{
-          title: "Explore",
+          title: "Profile",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
+            <Ionicons name="person" size={24} color={color} />
           ),
         }}
+      />
+
+      <Tabs.Screen
+        name="insights"
+        options={
+          user.role === "admin"
+            ? {
+                title: "Insights",
+                tabBarButton: HapticTab,
+                tabBarIcon: ({ color }) => (
+                  <Ionicons name="bar-chart" size={24} color={color} />
+                ),
+              }
+            : {
+                tabBarButton: () => null,
+                title: "",
+                tabBarLabel: () => null,
+                tabBarIcon: () => null,
+              }
+        }
       />
     </Tabs>
   );
