@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
+import { UserAPI } from "./store/user/userAPI";
 
 export default function SignUpScreen() {
   const [name, setName] = useState("");
@@ -38,29 +39,14 @@ export default function SignUpScreen() {
 
     setError("");
 
-    console.log("Signing up:", { name, email, password });
-
     try {
-      const response = await fetch("http://localhost:3000/users/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name, email, password }),
-      });
+      const data = await UserAPI.signup(name, email, password);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        setError(errorData.message || "Signup failed");
-        return;
-      }
-
-      const data = await response.json();
-      console.log("Signup successful:", data);
       router.push("/login");
-    } catch (error) {
-      console.error("Signup error:", error);
-      setError("An error occurred. Please try again.");
+    } catch (err: any) {
+      setError(
+        err.response?.data?.message || "Signup failed. Please try again."
+      );
     }
   };
 
