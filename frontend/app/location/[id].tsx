@@ -126,18 +126,20 @@ export default function LocationDetails() {
         </Text>
         <View style={styles.infoRow}>
           <View style={styles.bullet} />
-          <Text style={styles.infoText}>Max Height: {location.maxHeight}</Text>
-        </View>
-        <View style={styles.infoRow}>
-          <View style={styles.bullet} />
           <Text style={styles.infoText}>
-            Wheel Width: {location.wheelWidth}
+            Max Height: {location.maxHeight} m
           </Text>
         </View>
         <View style={styles.infoRow}>
           <View style={styles.bullet} />
           <Text style={styles.infoText}>
-            Mirror Length: {location.mirrorLength}
+            Wheel Width: {location.wheelWidth} m
+          </Text>
+        </View>
+        <View style={styles.infoRow}>
+          <View style={styles.bullet} />
+          <Text style={styles.infoText}>
+            Mirror Length: {location.mirrorLength} m
           </Text>
         </View>
       </View>
