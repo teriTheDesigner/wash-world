@@ -75,6 +75,8 @@ export default function HomeScreen() {
         flex: 1,
         backgroundColor: "white",
         paddingHorizontal: 30,
+        flexDirection: "column",
+        alignItems: "center",
       }}
     >
       <Text
@@ -83,7 +85,7 @@ export default function HomeScreen() {
           fontWeight: "bold",
           marginTop: 40,
           marginBottom: 20,
-          color: "#34B566",
+          color: "black",
         }}
       >
         All locations
