@@ -30,6 +30,12 @@ export class LocationController {
     return this.locationService.findAll(take, skip);
   }
 
+  @Get('stats')
+  @UseGuards(AuthGuard, AdminGuard)
+  async getStats() {
+    return this.locationService.getAdminStats();
+  }
+
   @Get(':id')
   @UseGuards(AuthGuard)
   findOne(@Param('id', ParseIntPipe) id: number) {
