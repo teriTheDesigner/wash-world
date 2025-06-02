@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, Repository } from 'typeorm';
 import { Location } from '../location.entity';
 import { CreateLocationDto } from './dto/create-location.dto';
-import { ServiceUnit } from 'src/service-unit.entity';
+import { ServiceUnit } from '../service-unit.entity';
 
 @Injectable()
 export class LocationService {
