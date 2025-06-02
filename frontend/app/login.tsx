@@ -83,7 +83,11 @@ export default function LoginScreen() {
         <ActivityIndicator size="large" />
       ) : (
         <>
-          <TouchableOpacity style={styles.button} onPress={handleLogin}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleLogin}
+            testID="loginButton"
+          >
             <Text style={styles.buttonText}>Log In</Text>
           </TouchableOpacity>
 
