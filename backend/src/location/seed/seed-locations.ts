@@ -47,13 +47,13 @@ async function bootstrap() {
     location.serviceUnits = serviceUnits;
 
     await dataSource.manager.save(location);
-    console.log(`✅ Saved: ${location.name}`);
+    console.log(`Saved: ${location.name}`);
   }
 
   await app.close();
-  console.log('🌱 Seeding complete');
+  console.log('Seeding complete');
 }
 
 bootstrap().catch((err) => {
-  console.error('❌ Seeding error:', err);
+  console.error('Seeding error:', err);
 });
